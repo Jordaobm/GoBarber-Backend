@@ -5,6 +5,7 @@ import AppError from '@shared/errors/AppError';
 
 import Appointment from '../infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '../repositories/iAppointmentsRepository';
+import INotificationsRepository from '@modules/notifications/repositories/iNotificationsRepository';
 
 interface IRequest {
   provider_id: string;
@@ -17,6 +18,9 @@ class CreateAppointmentService {
   constructor(
     @inject('AppointmentsRepository')
     private appointmentsRepository: IAppointmentsRepository,
+
+    @inject('NotificationsRepository')
+    private notificationsRepository: INotificationsRepository,
 
 
 
@@ -57,6 +61,14 @@ class CreateAppointmentService {
       user_id,
       date: appointmentDate,
     });
+
+    const dateFormated = format(appointmentDate, "dd/MM/yyyy 'às' HH:mm'h' ");
+
+    await this.notificationsRepository.create({
+        recipient_id:provider_id,
+        content:`Novo agendamento para dia ${dateFormated}`,
+
+    })
 
     return appointment;
   }
