@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import UpdateProfileService from '@modules/users/services/UpdateProfileService';
 import ShowProfileService from '@modules/users/services/ShowProfileService';
-
+import { classToClass } from 'class-transformer';
 
 
 export default class ProfileController {
@@ -15,11 +15,9 @@ export default class ProfileController {
 
         const showProfile = container.resolve(ShowProfileService);
 
-        const user = await showProfile.execute({user_id});
+        const user = await showProfile.execute({ user_id });
 
-        delete user.password
-
-        return response.json(user);
+        return response.json(classToClass(user));
     }
 
 
@@ -44,8 +42,6 @@ export default class ProfileController {
             password,
         });
 
-        delete user.password;
-
-        return response.json(user);
+        return response.json(classToClass(user));
     }
 }
