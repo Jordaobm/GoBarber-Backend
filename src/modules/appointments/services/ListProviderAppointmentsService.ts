@@ -3,6 +3,7 @@ import { injectable, inject } from 'tsyringe';
 import IAppointmentsRepository from '../repositories/iAppointmentsRepository';
 import Appointment from '../infra/typeorm/entities/Appointment';
 import ICacheProvider from '@shared/container/providers/CacheProvider/models/iCacheProvider';
+import { classToClass } from "class-transformer";
 
 
 interface IRequest {
@@ -38,7 +39,7 @@ class ListProviderAppointmentsService {
 
 
             await this.cacheProvider.save(
-                cacheKey, apppointments
+                cacheKey, classToClass(apppointments)
             )
         }
 
